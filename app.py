@@ -1,4 +1,6 @@
+import datetime
 import re
+from collections import defaultdict
 
 import flask
 from flask import Flask
@@ -6,17 +8,22 @@ from flask import request
 
 app = Flask(__name__)
 
-OBJ_INFO_PAT = re.compile(r"<\d\d\?\w+>")
-STATS = []
+OBJ_INFO_PAT = re.compile(r"(<\d\d\?[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/\sÄÖÜäöüß]+>)")
+ALL_STATS = []
 
 
 @app.route("/", methods=["GET"])
 def index():
-    return "\n".join(STATS)
+    retval = "No statistics"
+
+    if ALL_STATS:
+        retval = "\n".join([f"<p>{dt}\t{stat}</p>" for dt, stat in ALL_STATS])
+
+    return retval
 
 
 @app.route("/stats", methods=["POST"])
-def post_stats():
+def stats():
     """Stats package format:
     DRTE-ElAlamein?164640?500?455?25?1111?8888?<00?Obj1>?<11?Obj2>
 
@@ -49,7 +56,10 @@ def post_stats():
     map_name = data[0]
 
     data_blob = data[1]  # 164640
-    winning_team = "Axis" if int(data_blob[0]) == 0 else "Allies"
+    team_dict = defaultdict(lambda: "?")
+    team_dict[0] = "Axis"
+    team_dict[1] = "Allies"
+    winning_team = team_dict[int(data_blob[0])]
     max_players = int(data_blob[1:3])
     num_players = int(data_blob[2:4])
     reversed_roles = bool(data_blob[5])
@@ -60,8 +70,9 @@ def post_stats():
     axis_score = data[5]
     allies_score = data[6]
 
-    obj_infos = "?".join(data[6:])
-    obj_infos = OBJ_INFO_PAT.match(obj_infos)
+    obj_infos = "?".join(data[7:])
+    print(obj_infos)
+    obj_infos = OBJ_INFO_PAT.findall(obj_infos)
 
     print(map_name)
     print(winning_team)
@@ -85,10 +96,12 @@ def post_stats():
     stats["axis_score"] = axis_score
     stats["allies_score"] = allies_score
 
-    for obj_info in obj_infos.groups():
+    for obj_info in obj_infos:
         obj_info = obj_info.split("?")
         stats[obj_info[0]] = obj_info[1]
         print(obj_info)
+
+    ALL_STATS.append((datetime.datetime.utcnow().isoformat(), stats))
 
     return flask.Response(status=201)
 
