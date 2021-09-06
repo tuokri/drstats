@@ -9,15 +9,17 @@ import pytz
 from flask import Flask
 from flask import request
 from flask import send_from_directory
+from flask_sqlalchemy import SQLAlchemy
 
-import db
-from db import database
+import models
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
     "DATABASE_URL").replace("postgres://", "postgresql://")
 app.config["SQLALCHEMY_DATABASE_URI"] += "?ssl=true&sslmode=require"
+
+db = SQLAlchemy(app)
 
 OBJ_INFO_PAT = re.compile(r"(<\d\d\?[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/\sÄÖÜäöüß]+>)")
 
@@ -40,7 +42,7 @@ def index():
 
     retval = "No statistics"
 
-    all_stats = db.Statistic.query
+    all_stats = models.Statistic.query
 
     if all_stats:
         all_stats = all_stats.all()
@@ -135,9 +137,9 @@ def post_stats():
         stats[obj_info[0]] = obj_info[1]
         print(obj_info)
 
-    s = db.Statistic(date=datetime.datetime.now().astimezone(pytz.utc), stats=str(stats))
-    database.session.add(s)
-    database.session.commit()
+    s = models.Statistic(date=datetime.datetime.now().astimezone(pytz.utc), stats=str(stats))
+    db.session.add(s)
+    db.session.commit()
 
     return flask.Response(status=201)
 

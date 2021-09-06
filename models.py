@@ -1,20 +1,14 @@
 import datetime
 
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import DateTime
-from sqlalchemy import String
-
-from app import app
-
-database = SQLAlchemy(app)
+from app import db
 
 
-class Statistic(database.Model):
+class Statistic(db.Model):
     __tablename__ = "Statistics"
 
     # server_addr = Column(String(15))
-    date = database.Column(DateTime)
-    stats = database.Column(String)
+    date = db.Column(db.DateTime)
+    stats = db.Column(db.String)
 
     def __init__(self, date: datetime.datetime, stats: str):
         self.date = date
