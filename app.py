@@ -20,6 +20,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
 app.config["SQLALCHEMY_DATABASE_URI"] += "?ssl=true&sslmode=require"
 
 db = SQLAlchemy(app)
+db.create_all()
 
 OBJ_INFO_PAT = re.compile(r"(<\d\d\?[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/\sÄÖÜäöüß]+>)")
 
