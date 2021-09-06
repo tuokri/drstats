@@ -18,7 +18,7 @@ def init_db(app):
 
 
 class Statistic(Model):
-    __tablename__ = "stats"
+    __tablename__ = "Statistics"
 
     # server_addr = Column(String(15))
     date = Column(DateTime)
@@ -29,4 +29,4 @@ class Statistic(Model):
         self.stats = stats
 
     def __repr__(self):
-        return f"<Statistics: {self.date}: {self.stats}>"
+        return f"<Statistic: {self.date}: {self.stats}>"
