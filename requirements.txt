@@ -1,3 +1,5 @@
 discord
 requests
 logbook
+flask
+gunicorn
