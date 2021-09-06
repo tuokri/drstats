@@ -18,7 +18,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
 app.config["SQLALCHEMY_DATABASE_URI"] += "?sslmode=require"
 
 db = SQLAlchemy(app)
-import models
+# import models
+from models import Statistic
 
 db.create_all()
 db.session.commit()
@@ -44,7 +45,7 @@ def index():
 
     retval = "No statistics"
 
-    all_stats = models.Statistic.query
+    all_stats = Statistic.query
 
     if all_stats:
         all_stats = all_stats.all()
@@ -139,7 +140,7 @@ def post_stats():
         stats[obj_info[0]] = obj_info[1]
         print(obj_info)
 
-    s = models.Statistic(date=datetime.datetime.now().astimezone(pytz.utc), stats=str(stats))
+    s = Statistic(date=datetime.datetime.now().astimezone(pytz.utc), stats=str(stats))
     db.session.add(s)
     db.session.commit()
 
