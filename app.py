@@ -19,6 +19,12 @@ app.config["SQLALCHEMY_DATABASE_URI"] += "?sslmode=require"
 
 db = SQLAlchemy(app)
 
+from models import Statistic
+
+db.init_app(app)
+db.create_all()
+db.session.commit()
+
 OBJ_INFO_PAT = re.compile(r"(<\d\d\?[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/\sÄÖÜäöüß]+>)")
 
 
@@ -143,9 +149,4 @@ def post_stats():
 
 
 if __name__ == "__main__":
-    from models import Statistic
-
-    db.create_all()
-    db.session.commit()
-
     app.run(threaded=True, port=80)
