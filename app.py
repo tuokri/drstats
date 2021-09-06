@@ -1,9 +1,10 @@
 import re
 
+import flask
 from flask import Flask
 from flask import request
 
-app = Flask("drstats")
+app = Flask(__name__)
 
 OBJ_INFO_PAT = re.compile(r"<\d\d\?\w+>")
 STATS = []
@@ -41,7 +42,7 @@ def post_stats():
     data = data.split("?")
 
     if len(data) < 8:
-        raise ValueError("invalid data package: not enough fields")
+        return flask.Response(status=400)
 
     stats = {}
 
@@ -88,6 +89,8 @@ def post_stats():
         obj_info = obj_info.split("?")
         stats[obj_info[0]] = obj_info[1]
         print(obj_info)
+
+    return flask.Response(status=201)
 
 
 if __name__ == "__main__":
