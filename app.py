@@ -2,11 +2,13 @@ import datetime
 import os
 import re
 from collections import defaultdict
+from pathlib import Path
 
 import flask
 import pytz
 from flask import Flask
 from flask import request
+from flask import send_from_directory
 
 import db
 from db import init_db
@@ -21,6 +23,20 @@ OBJ_INFO_PAT = re.compile(r"(<\d\d\?[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/
 
 @app.route("/", methods=["GET"])
 def index():
+    template = (
+        """<!doctype html>
+        <html>
+        <head>
+            <link rel="shortcut icon" href="/favicon.ico">
+            <title>Desert Rats Statistics</title>
+        </head>
+        <body>
+            {stats}
+        </body>
+        </html>
+        """
+    )
+
     retval = "No statistics"
 
     all_stats = db.Statistic.query.all()
@@ -28,7 +44,13 @@ def index():
     if all_stats:
         retval = "\n".join([f"<p>{stat.date}\t{stat.stats}</p>" for stat in all_stats])
 
-    return retval
+    return template.format(stats=retval)
+
+
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory(Path(app.root_path, "static", "images"),
+                               "favicon.ico", mimetype="image/png")
 
 
 @app.route("/stats", methods=["POST"])
