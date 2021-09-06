@@ -9,7 +9,8 @@ class Statistic(db.Model):
     __tablename__ = "Statistics"
 
     # server_addr = Column(String(15))
-    ident = db.Column("ident", db.Sequence(name="ident", start=1, increment=1), primary_key=True)
+    ident = db.Column("ident", db.Integer,
+                      db.Sequence(name="ident", start=1, increment=1), primary_key=True)
     date = db.Column("date", db.DateTime)
     stats = db.Column("stats", db.String)
 
