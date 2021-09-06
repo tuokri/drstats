@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
     "DATABASE_URL").replace("postgres://", "postgresql://")
-app.config["SQLALCHEMY_DATABASE_URI"] += "sslmode=require"
+app.config["SQLALCHEMY_DATABASE_URI"] += "?sslmode=require"
 
 db = SQLAlchemy(app)
 db.create_all()
