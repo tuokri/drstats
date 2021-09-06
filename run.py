@@ -24,7 +24,6 @@ RotatingFileHandler(
 logger = Logger("drstatsserver")
 # logbook.set_datetime_format("local")
 
-DATE_FMT = "%Y/%m/%d - %H:%M:%S"
 OBJ_INFO_PAT = re.compile(r"<\d\d\?\w+>")
 
 
