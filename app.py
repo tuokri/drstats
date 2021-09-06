@@ -41,7 +41,7 @@ def index():
 
     retval = "No statistics"
 
-    all_stats = stats_db.Statistic.query
+    all_stats = db.Statistic.query
 
     if all_stats:
         all_stats = all_stats.all()

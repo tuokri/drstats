@@ -1,9 +1,7 @@
 import datetime
 from typing import Optional
 
-from flask_sqlalchemy import Model
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import String
 
@@ -17,12 +15,12 @@ def init_db(app):
     return _DB
 
 
-class Statistic(Model):
+class Statistic(_DB.Model):
     __tablename__ = "Statistics"
 
     # server_addr = Column(String(15))
-    date = Column(DateTime)
-    stats = Column(String)
+    date = _DB.Column(DateTime)
+    stats = _DB.Column(String)
 
     def __init__(self, date: datetime.datetime, stats: str):
         self.date = date
