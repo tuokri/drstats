@@ -11,8 +11,6 @@ from flask import request
 from flask import send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 
-import models
-
 app = Flask(__name__)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
@@ -20,7 +18,10 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
 app.config["SQLALCHEMY_DATABASE_URI"] += "?sslmode=require"
 
 db = SQLAlchemy(app)
+import models
+
 db.create_all()
+db.session.commit()
 
 OBJ_INFO_PAT = re.compile(r"(<\d\d\?[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/\sÄÖÜäöüß]+>)")
 
