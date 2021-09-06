@@ -1,17 +1,16 @@
 import datetime
 
-from flask_sqlalchemy import Model
-from sqlalchemy import Column
-from sqlalchemy import DateTime
-from sqlalchemy import String
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 
-class Statistic(Model):
+class Statistic(db.Model):
     __tablename__ = "Statistics"
 
     # server_addr = Column(String(15))
-    date = Column("date", DateTime)
-    stats = Column("stats", String)
+    date = db.Column("date", db.DateTime)
+    stats = db.Column("stats", db.String)
 
     def __init__(self, date: datetime.datetime, stats: str):
         self.date = date

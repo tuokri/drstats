@@ -9,7 +9,9 @@ import pytz
 from flask import Flask
 from flask import request
 from flask import send_from_directory
-from flask_sqlalchemy import SQLAlchemy
+
+from models import Statistic
+from models import db
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -17,13 +19,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
     "DATABASE_URL").replace("postgres://", "postgresql://")
 app.config["SQLALCHEMY_DATABASE_URI"] += "?sslmode=require"
 
-db = SQLAlchemy(app)
-
-from models import Statistic
-
 db.init_app(app)
-db.create_all()
-db.session.commit()
 
 OBJ_INFO_PAT = re.compile(r"(<\d\d\?[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/\sÄÖÜäöüß]+>)")
 
