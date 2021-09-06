@@ -7,8 +7,8 @@ class Statistic(db.Model):
     __tablename__ = "Statistics"
 
     # server_addr = Column(String(15))
-    date = db.Column(db.DateTime)
-    stats = db.Column(db.String)
+    date = db.Column("date", db.DateTime)
+    stats = db.Column("value", db.String)
 
     def __init__(self, date: datetime.datetime, stats: str):
         self.date = date
