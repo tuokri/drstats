@@ -1,29 +1,38 @@
 import datetime
+import os
 import re
 from collections import defaultdict
 
 import flask
+import pytz
 from flask import Flask
 from flask import request
 
+import db
+from db import init_db
+
 app = Flask(__name__)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URL"]
+stats_db = init_db(app)
 
 OBJ_INFO_PAT = re.compile(r"(<\d\d\?[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/\sÄÖÜäöüß]+>)")
-ALL_STATS = []
 
 
 @app.route("/", methods=["GET"])
 def index():
     retval = "No statistics"
 
-    if ALL_STATS:
-        retval = "\n".join([f"<p>{dt}\t{stat}</p>" for dt, stat in ALL_STATS])
+    all_stats = stats_db.Statistic.query.all()
+
+    if all_stats:
+        retval = "\n".join([f"<p>{stat.date}\t{stat.stats}</p>" for stat in all_stats])
 
     return retval
 
 
 @app.route("/stats", methods=["POST"])
-def stats():
+def post_stats():
     """Stats package format:
     DRTE-ElAlamein?164640?500?455?25?1111?8888?<00?Obj1>?<11?Obj2>
 
@@ -101,7 +110,9 @@ def stats():
         stats[obj_info[0]] = obj_info[1]
         print(obj_info)
 
-    ALL_STATS.append((datetime.datetime.utcnow().isoformat(), stats))
+    s = db.Statistic(date=datetime.datetime.now().astimezone(pytz.utc), stats=str(stats))
+    stats_db.session.add(s)
+    stats_db.session.commit()
 
     return flask.Response(status=201)
 

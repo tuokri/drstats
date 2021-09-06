@@ -3,3 +3,7 @@ requests
 logbook
 flask
 gunicorn
+psycopg2-binary
+flask_sqlalchemy
+sqlalchemy
+pytz
