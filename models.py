@@ -11,7 +11,7 @@ class Statistic(Model):
 
     # server_addr = Column(String(15))
     date = Column("date", DateTime)
-    stats = Column("value", String)
+    stats = Column("stats", String)
 
     def __init__(self, date: datetime.datetime, stats: str):
         self.date = date
