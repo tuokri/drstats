@@ -23,7 +23,7 @@ OBJ_INFO_PAT = re.compile(r"(<\d\d\?[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/
 def index():
     retval = "No statistics"
 
-    all_stats = stats_db.Statistic.query.all()
+    all_stats = db.Statistic.query.all()
 
     if all_stats:
         retval = "\n".join([f"<p>{stat.date}\t{stat.stats}</p>" for stat in all_stats])
