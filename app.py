@@ -10,7 +10,7 @@ from flask import Flask
 from flask import request
 from flask import send_from_directory
 
-from models import Statistic
+from models import EndGameStatistic
 from models import db
 
 app = Flask(__name__)
@@ -24,7 +24,8 @@ with app.app_context():
     db.create_all()
     db.session.commit()
 
-OBJ_INFO_PAT = re.compile(r"(<\d\d\?[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/\sÄÖÜäöüß]+>)")
+OBJ_INFO_PAT = re.compile(
+    r"(<\d\d\?[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/\sÄÖÜäöüß]+>)")
 
 
 @app.route("/", methods=["GET"])
@@ -45,7 +46,7 @@ def index():
 
     retval = "No statistics"
 
-    all_stats = Statistic.query
+    all_stats = EndGameStatistic.query
 
     if all_stats:
         all_stats = all_stats.all()
@@ -140,7 +141,7 @@ def post_stats():
         stats[obj_info[0]] = obj_info[1]
         print(obj_info)
 
-    s = Statistic(date=datetime.datetime.now().astimezone(pytz.utc), stats=str(stats))
+    s = EndGameStatistic(date=datetime.datetime.now().astimezone(pytz.utc), stats=str(stats))
     db.session.add(s)
     db.session.commit()
 
@@ -149,8 +150,3 @@ def post_stats():
 
 if __name__ == "__main__":
     app.run(threaded=True, port=80)
-
-    # TODO: doesn't work.
-    # with app.app_context():
-    #     db.create_all()
-    #     db.session.commit()
