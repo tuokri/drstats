@@ -131,6 +131,7 @@ def post_stats():
     """
     # For Heroku routing only.
     address = request.headers["X-Forwarded-For"]
+    server_name = UNKNOWN_SERVER
 
     data = str(request.data, encoding="latin-1").strip()
     data = data.split("?")
@@ -174,6 +175,10 @@ def post_stats():
     stats["allies_reinforcements"] = allies_reinforcements
     stats["axis_team_score"] = axis_score
     stats["allies_team_score"] = allies_score
+    stats["level_name"] = map_name
+    stats["level_version"] = map_version
+    stats["server_name"] = server_name
+    stats["server_address"] = address
 
     print("*" * 80)
     pprint(stats)
@@ -185,7 +190,7 @@ def post_stats():
         # stats[obj_info[0]] = obj_info[1]
         print(obj_info[1], obj_info[0])
 
-    server = Server(address=address, name="TODO_GET_SERVER_NAME")
+    server = Server(address=address, name=server_name)
     db.session.add(server)
 
     level = Level(name=map_name, version=map_version)
