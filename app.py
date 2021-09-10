@@ -174,7 +174,7 @@ def post_stats():
     print(axis_score)
     print(allies_score)
 
-    stats["map_name"] = map_name
+    # stats["map_name"] = map_name
     stats["winning_team"] = winning_team
     stats["max_players"] = max_players
     stats["num_players"] = num_players
