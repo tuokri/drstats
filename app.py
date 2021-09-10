@@ -2,6 +2,7 @@ import os
 import re
 from collections import defaultdict
 from pathlib import Path
+from pprint import pprint
 
 import flask
 from flask import Flask
@@ -88,7 +89,7 @@ def favicon():
 @app.route("/stats", methods=["POST"])
 def post_stats():
     """Stats package format:
-    DRTE-ElAlamein?164640?500?455?25?1111?8888?<00?Obj1>?<11?Obj2>
+    DRTE-ElAlamein?16464130?500?455?25?1111?8888?<00?Obj1>?<11?Obj2>
 
     struct BalanceStats
     {
@@ -142,15 +143,15 @@ def post_stats():
     map_name = data[0]
     map_version = data[1]
 
-    data_blob = data[2]  # 164640
+    data_blob = data[2]  # 16464130
     team_dict = defaultdict(lambda: "?")
     team_dict[0] = "Axis"
     team_dict[1] = "Allies"
     winning_team = team_dict[int(data_blob[0])]
     max_players = int(data_blob[1:3])
     num_players = int(data_blob[2:4])
-    win_condition = WINBYTE_TO_CONDITION[int(data_blob[5])]
-    reversed_roles = bool(data_blob[6])
+    win_condition = WINBYTE_TO_CONDITION[int(data_blob[4:6])]
+    reversed_roles = bool(data_blob[7])
 
     time_remaining_secs = data[3]
     axis_reinforcements = data[4]
@@ -161,18 +162,6 @@ def post_stats():
     obj_infos = "?".join(data[8:])
     print(obj_infos)
     obj_infos = OBJ_INFO_PAT.findall(obj_infos)
-
-    print(map_name)
-    print(winning_team)
-    print(max_players)
-    print(num_players)
-    print(win_condition)
-    print(reversed_roles)
-    print(time_remaining_secs)
-    print(axis_reinforcements)
-    print(allies_reinforcements)
-    print(axis_score)
-    print(allies_score)
 
     # stats["map_name"] = map_name
     stats["winning_team"] = winning_team
@@ -186,10 +175,15 @@ def post_stats():
     stats["axis_team_score"] = axis_score
     stats["allies_team_score"] = allies_score
 
+    print("*" * 80)
+    pprint(stats)
+    print(f"map_version = {map_version}")
+    print("*" * 80)
+
     for obj_info in obj_infos:
         obj_info = obj_info.split("?")
-        stats[obj_info[0]] = obj_info[1]
-        print(obj_info)
+        # stats[obj_info[0]] = obj_info[1]
+        print(obj_info[1], obj_info[0])
 
     server = Server(address=address, name="TODO_GET_SERVER_NAME")
     db.session.add(server)
