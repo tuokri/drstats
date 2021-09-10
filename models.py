@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKeyConstraint
+from sqlalchemy import func
 from sqlalchemy.orm import relationship
 
 db = SQLAlchemy()
@@ -41,7 +42,10 @@ class EndGameStatistic(db.Model):
     level_name = db.Column("levelName", db.String(128), nullable=False)
     level_version = db.Column("levelVersion", db.Integer, nullable=False)
 
-    date = db.Column("date", db.DateTime, nullable=False)
+    date = db.Column("date", db.DateTime, nullable=False,
+                     server_default=func.now(),
+                     onupdate=func.now())
+
     winning_team = db.Column("winningTeam", db.String(8))
     max_players = db.Column("maxPlayers", db.Integer)
     num_players = db.Column("numPlayers", db.Integer)

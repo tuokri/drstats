@@ -179,12 +179,12 @@ def post_stats():
     stats["max_players"] = max_players
     stats["num_players"] = num_players
     stats["win_condition"] = win_condition
-    stats["reversed_roles"] = reversed_roles
+    stats["reversed_roles_and_spawns"] = reversed_roles
     stats["time_remaining_secs"] = time_remaining_secs
     stats["axis_reinforcements"] = axis_reinforcements
     stats["allies_reinforcements"] = allies_reinforcements
-    stats["axis_score"] = axis_score
-    stats["allies_score"] = allies_score
+    stats["axis_team_score"] = axis_score
+    stats["allies_team_score"] = allies_score
 
     for obj_info in obj_infos:
         obj_info = obj_info.split("?")
